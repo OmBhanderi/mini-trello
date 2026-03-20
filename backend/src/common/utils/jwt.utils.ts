@@ -1,4 +1,6 @@
 import jwt, { type SignOptions } from "jsonwebtoken";
+import { AuthRequest } from "../middleware/auth.middelware";
+import { Response } from "express";
 
 type signJwtTokenProps = {
   id: string;
@@ -13,5 +15,15 @@ export function signJwtToken(id: signJwtTokenProps) {
   return token;
 }
 
+export function verifyJwtToken(req: AuthRequest) {
+  const JWT_SECRET = process.env.JWT_SECRET as string;
 
+  const token = req.cookies.token;
 
+  if (!token) {
+    if (!token) throw new Error("Unauthorized");;
+  }
+
+  const decoded = jwt.verify(token, JWT_SECRET) as { id: string };
+  return decoded;
+}

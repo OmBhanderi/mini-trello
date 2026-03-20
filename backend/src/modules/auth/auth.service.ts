@@ -8,7 +8,7 @@ export const signupService = async (
   data: SignupDto,
 ): Promise<SignupResponseDto> => {
   const { name, email, password } = data;
-  const existingUser = await findUserByEmail({ email });
+  const existingUser = await findUserByEmail(email);
   if (existingUser) throw new Error("User already exists");
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -33,7 +33,7 @@ export const loginService = async (
   data: LoginDto,
 ): Promise<LoginResponseDto> => {
   const { email, password } = data;
-  const user = await findUserByEmail({ email });
+  const user = await findUserByEmail(email);
   if (!user) throw new Error("User not found");
 
   const isMatch = await bcrypt.compare(password, user.password);
@@ -49,7 +49,7 @@ export const loginService = async (
         name: user.name,
         email: user.email,
       },
-      token
+      token,
     },
   };
 };

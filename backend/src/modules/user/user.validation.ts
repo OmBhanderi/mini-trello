@@ -11,8 +11,5 @@ export const loginSchema = z.object({
   password: z.string().min(6),
 });
 
-export function validateLoginRequest(req: Request) {
-  const data = signupSchema.parse(req.body);
-}
 export type SignupDto = z.infer<typeof signupSchema>;
 export type LoginDto = z.infer<typeof loginSchema>;

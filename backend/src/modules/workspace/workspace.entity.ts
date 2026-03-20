@@ -2,23 +2,22 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
+  ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { User } from "../user/user.entity";
 
 @Entity()
-export class User {
+export class Workspace {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @Column()
+  @Column({ length: 150 })
   name!: string;
 
-  @Column({unique: true })
-  email!: string;
-
-  @Column()
-  password!: string;
+  @ManyToOne(() => User, { onDelete: "CASCADE" })
+  owner!: User;
 
   @CreateDateColumn()
   createdAt!: Date;
