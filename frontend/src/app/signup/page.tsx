@@ -8,7 +8,11 @@ import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
 import { Label } from "@/src/components/ui/label";
 import { Card, CardContent } from "@/src/components/ui/card";
-import Link from "next/link"
+import Link from "next/link";
+import { signupApi } from "@/src/services/auth";
+import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const schema = z.object({
   name: z.string().min(2),
@@ -16,20 +20,33 @@ const schema = z.object({
   password: z.string().min(6),
 });
 
-type FormData = z.infer<typeof schema>;
+export type signUpSchema = z.infer<typeof schema>;
+
 
 export default function SignupForm() {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>({
+  } = useForm<signUpSchema>({
     resolver: zodResolver(schema),
   });
+  const [error, setError] = useState("");
+ 
 
-  const onSubmit = (data: FormData) => {
-    console.log("Signup Data:", data);
+  const mutation = useMutation({
+    mutationFn: signupApi,
+  });
+   const router = useRouter();
 
+  const onSubmit = (data: signUpSchema) => {
+    mutation.mutate(data, {
+      onSuccess: () => {
+        setError("");
+        router.push("/");
+      },
+      onError: (err: Error) => setError(err?.message),
+    });
   };
 
   return (
@@ -41,13 +58,17 @@ export default function SignupForm() {
           <div className="space-y-1">
             <Label>Name</Label>
             <Input {...register("name")} />
-            {errors.name && <p className="text-red-500">{errors.name.message}</p>}
+            {errors.name && (
+              <p className="text-red-500">{errors.name.message}</p>
+            )}
           </div>
 
           <div className="space-y-1">
             <Label>Email</Label>
             <Input {...register("email")} />
-            {errors.email && <p className="text-red-500">{errors.email.message}</p>}
+            {errors.email && (
+              <p className="text-red-500">{errors.email.message}</p>
+            )}
           </div>
 
           <div className="space-y-1">
@@ -56,19 +77,20 @@ export default function SignupForm() {
             {errors.password && (
               <p className="text-red-500">{errors.password.message}</p>
             )}
-          </div >
+          </div>
 
           <Button type="submit" className="w-full">
-            Create Account
+            {mutation.isPending ? "Creating.." : "Create Account"}
           </Button>
+          {mutation.isError ? <p> {error}</p> : ""}
         </form>
 
         <p className="text-sm text-center">
-            Already have an account?
-            <Link href="/" className="text-blue-600 cursor-pointer">
-              Log In
-            </Link>
-          </p>
+          Already have an account?
+          <Link href="/" className="text-blue-600 cursor-pointer">
+            Log In
+          </Link>
+        </p>
       </CardContent>
     </Card>
   );

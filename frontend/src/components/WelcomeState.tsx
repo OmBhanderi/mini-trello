@@ -1,3 +1,5 @@
+"use client"
+
 import { User } from "@/src/types";
 
 type Props = {

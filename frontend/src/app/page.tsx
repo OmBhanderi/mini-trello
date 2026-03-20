@@ -9,26 +9,42 @@ import { Input } from "@/src//components/ui/input";
 import { Label } from "@/src//components/ui/label";
 import { Card, CardContent } from "@/src/components/ui/card";
 import Link from "next/link";
+import { useMutation } from "@tanstack/react-query";
+import { loginApi } from "../services/auth";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
 
 const schema = z.object({
   email: z.string(),
   password: z.string().min(6),
 });
 
-type FormData = z.infer<typeof schema>;
+export type logInSchema = z.infer<typeof schema>;
 
 export default function LoginForm() {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>({
+  } = useForm<logInSchema>({
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = (data: FormData) => {
-    console.log("Login Data:", data);
-    // call API here
+  const mutation = useMutation({mutationFn:loginApi,})
+  const [error,setError] = useState("");
+  const router = useRouter()
+
+  const onSubmit = (data: logInSchema) => {
+    mutation.mutate(data,{
+      onSuccess: ()=>{
+        setError("");
+        router.push("/dashboard")
+      },
+      onError : (err) =>{
+        setError(err.message)
+      }
+    })
   };
 
   return (
@@ -55,8 +71,9 @@ export default function LoginForm() {
             </div>
 
             <Button type="submit" className="w-full">
-              Login
+              {mutation.isPending ? "Logging in..." : "Login"}
             </Button>
+            {mutation.isError? <p>{error}</p> : " "}
           </form>
 
           <p className="text-sm text-center">
