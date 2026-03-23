@@ -21,6 +21,7 @@ export const findWorkspacesByUser = (userId: string) => {
     },
     select: {
       name: true,
+      id:true
     },
     order: {
       createdAt: "DESC",

@@ -1,7 +1,7 @@
 "use client";
 import UserLayout from "@/src/components/layout/userLayout";
 
-const DashboardPage = () => {  
+const DashboardPage = () => {
   return (
     <UserLayout>
       {/* <WelcomeState
@@ -9,7 +9,12 @@ const DashboardPage = () => {
         hasWorkspaces={hasWorkspaces}
         onCreateWorkspace={handleCreateWorkspace}
       /> */}
-      <div></div>
+      <div
+        className="
+      flex justify-center items-center h-screen bg-gray-300"
+      >
+        <div>Choose Any WorkSpace Or create a new one</div>
+      </div>
     </UserLayout>
   );
 };

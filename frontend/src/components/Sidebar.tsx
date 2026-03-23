@@ -9,6 +9,8 @@ type Props = {
   onSelectWorkspace: (id: string) => void;
   onCreateWorkspace: () => void;
   onLogout: () => void;
+  isLoading: boolean;
+  error: boolean;
 };
 
 const Sidebar = ({
@@ -17,20 +19,33 @@ const Sidebar = ({
   onSelectWorkspace,
   onCreateWorkspace,
   onLogout,
+  isLoading,
+  error,
 }: Props) => {
   return (
     <div className="w-64 h-screen bg-gray-900 text-white flex flex-col justify-between">
       <div className="p-4 overflow-y-auto">
-        <h2 className="text-lg font-semibold mb-4">📁 Workspaces</h2>
+        <h2 className="text-lg font-semibold mb-4"> Workspaces</h2>
 
         {/* Your Workspaces */}
         <div className="mb-6">
           <p className="text-sm text-gray-400 mb-2">Your Workspaces</p>
-          {yourWorkspaces.map((ws) => (
+          {isLoading && (
+            <div className="p-2 rounded hover:bg-gray-700 cursor-pointer truncate">
+              Loading... 
+            </div>
+          )}
+          {error && (
+            <div className="p-2 rounded hover:bg-gray-700 cursor-pointer truncate">
+              Couldnt Fetch
+            </div>
+          )}
+
+          {yourWorkspaces?.map((ws) => (
             <div
               key={ws.id}
               onClick={() => onSelectWorkspace(ws.id)}
-              className="p-2 rounded hover:bg-gray-700 cursor-pointer"
+              className="p-2 rounded hover:bg-gray-700 cursor-pointer truncate"
             >
               {ws.name}
             </div>
@@ -38,7 +53,7 @@ const Sidebar = ({
         </div>
 
         {/* Joined Workspaces */}
-        <div className="mb-6">
+        {/* <div className="mb-6">
           <p className="text-sm text-gray-400 mb-2">Joined Workspaces</p>
           {joinedWorkspaces.map((ws) => (
             <div
@@ -49,7 +64,7 @@ const Sidebar = ({
               {ws.name}
             </div>
           ))}
-        </div>
+        </div> */}
 
         {/* Create Workspace */}
         <button

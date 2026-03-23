@@ -1,17 +1,12 @@
 import { CreateWorkspaceModalFormData } from "../components/workspace/createWorkSpaceModel";
-export const createWorkspaceApi = async (data: CreateWorkspaceModalFormData) => {
-  // replace with your real API
-  const res = await fetch("/api/workspaces", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
+import { API } from "../services/index";
 
-  if (!res.ok) {
-    throw new Error("Failed to create workspace");
-  }
+export async function getWorkSpaceApi() {
+  const res = await API.get("/workspace/");
+  return res.data;
+}
 
-  return res.json();
-};
+export async function createWorkspaceApi(data: CreateWorkspaceModalFormData) {
+  const res = await API.post("/workspace/", data);
+  return res.data
+}
