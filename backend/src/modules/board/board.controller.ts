@@ -12,7 +12,7 @@ export const createBoardController = async (
   res: Response,
 ) => {
   try {
-    const data = createBoardSchema.parse(req.body);
+    const data = req.body;
     const workSpaceId = req.params.workSpaceId as string;
     const finalData = { ...data, workSpaceId: workSpaceId };
 
